@@ -1,0 +1,86 @@
+{
+ "project": "agent-02-tool-calling",
+ "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+ "target": "https://agent-02-tool-calling.braylo777.workers.dev",
+ "run_at": "2026-10-28T00:28Z (approx.)",
+ "code": "post-fix (this commit)",
+ "note": "Recovered from the eval console log. The full per-case results.json from this run was lost when the build machine was restored from a snapshot, and the shared free Workers AI daily allowance was exhausted before it could be re-run. Only the cases printed before the run stopped are included; numbers are exactly as logged.",
+ "cases": [
+  {
+   "id": "c01",
+   "pass": true,
+   "ms": 1909,
+   "tools_used": [
+    "calculator"
+   ]
+  },
+  {
+   "id": "c02",
+   "pass": true,
+   "ms": 2137,
+   "tools_used": [
+    "calculator"
+   ]
+  },
+  {
+   "id": "c03",
+   "pass": true,
+   "ms": 1955,
+   "tools_used": [
+    "calculator"
+   ]
+  },
+  {
+   "id": "c04",
+   "pass": true,
+   "ms": 3262,
+   "tools_used": [
+    "calculator"
+   ]
+  },
+  {
+   "id": "w01",
+   "pass": true,
+   "ms": 7363,
+   "tools_used": [
+    "get_weather"
+   ]
+  },
+  {
+   "id": "w02",
+   "pass": true,
+   "ms": 6183,
+   "tools_used": [
+    "get_weather"
+   ]
+  },
+  {
+   "id": "w03",
+   "pass": true,
+   "ms": 2926,
+   "tools_used": [
+    "get_weather"
+   ]
+  },
+  {
+   "id": "w04",
+   "pass": true,
+   "ms": 1878,
+   "tools_used": [
+    "get_weather"
+   ]
+  },
+  {
+   "id": "p01",
+   "pass": true,
+   "ms": 3733,
+   "tools_used": [
+    "wikipedia"
+   ]
+  }
+ ],
+ "summary": {
+  "n": 9,
+  "passed": 9
+ }
+}

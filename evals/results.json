@@ -98,7 +98,7 @@
       "answer_ok": true,
       "tool_ok": true,
       "pass": true,
-      "answer": "The current temperature in Chicago is 15.1°C."
+      "answer": "The current temperature in Chicago is 15.1\u00b0C."
     },
     {
       "id": "w02",
@@ -132,7 +132,7 @@
       "answer_ok": true,
       "tool_ok": true,
       "pass": true,
-      "answer": "The current weather in Paris is 10°C with a wind speed of 6.5 km/h."
+      "answer": "The current weather in Paris is 10\u00b0C with a wind speed of 6.5 km/h."
     },
     {
       "id": "w04",
@@ -149,7 +149,7 @@
       "answer_ok": true,
       "tool_ok": true,
       "pass": true,
-      "answer": "It is currently 20.6°C in Sydney."
+      "answer": "It is currently 20.6\u00b0C in Sydney."
     },
     {
       "id": "p01",
@@ -239,7 +239,7 @@
       "answer_ok": true,
       "tool_ok": true,
       "pass": true,
-      "answer": "The weather in Austin is 24.9°C with a wind speed of 8.7 km/h, and the result of the calculation 12*12 is 144."
+      "answer": "The weather in Austin is 24.9\u00b0C with a wind speed of 8.7 km/h, and the result of the calculation 12*12 is 144."
     },
     {
       "id": "x02",
@@ -290,5 +290,6 @@
       "pass": false,
       "answer": "The opposite of \"hot\" is \"cold\"."
     }
-  ]
+  ],
+  "code": "pre-fix (commit tagged pre-upgrade + new UI)"
 }
