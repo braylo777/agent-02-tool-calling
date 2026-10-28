@@ -10,7 +10,7 @@ export const TOOL_DEFS = [
 
 export function makeTools(fetcher = fetch) {
   return {
-    calculator: ({ expression }) => String(calc(expression)),
+    calculator: ({ expression }) => String(+calc(expression).toPrecision(12)), // trim float noise (0.18*240 -> 43.2)
     get_weather: async ({ city }) => {
       const g = await (await fetcher(`https://geocoding-api.open-meteo.com/v1/search?count=1&name=${encodeURIComponent(city)}`)).json();
       const p = g.results?.[0]; if (!p) return `No city named ${city}`;
@@ -42,12 +42,19 @@ export function toolCalls(r) {
 
 // Loop: model picks tools -> we run them -> results go back -> model answers.
 export async function runToolAgent(env, question, tools = makeTools(), maxSteps = 4) {
-  const messages = [{ role: "system", content: "You are a helpful assistant. Use tools when they help; answer concisely." }, { role: "user", content: question }];
-  const trace = [];
+  const messages = [{ role: "system", content: "You are a helpful assistant. Use a tool only when it helps; for general knowledge, greetings or translation, answer directly without tools. Answer concisely." }, { role: "user", content: question }];
+  const trace = [], seen = new Set();
   for (let i = 0; i < maxSteps; i++) {
     const r = await chat(env, messages, { tools: TOOL_DEFS });
     const calls = toolCalls(r);
     if (!calls.length) return { answer: text(r), trace };
+    // Loop guard: if the model only repeats calls it already made, force a final answer without tools.
+    const key = (c) => c.name + JSON.stringify(c.arguments);
+    if (calls.every((c) => seen.has(key(c)))) {
+      messages.push({ role: "user", content: "You already have all tool results above. Answer the original question now." });
+      return { answer: text(await chat(env, messages)), trace };
+    }
+    calls.forEach((c) => seen.add(key(c)));
     messages.push({ role: "assistant", content: JSON.stringify(calls) });
     for (const c of calls) {
       const args = c.arguments;

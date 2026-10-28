@@ -1,0 +1,201 @@
+{
+ "project": "agent-02-tool-calling",
+ "url": "https://agent-02-tool-calling.braylo777.workers.dev",
+ "endpoint": "/api/ask",
+ "field": "question",
+ "kind": "agent",
+ "cases": [
+  {
+   "id": "c01",
+   "category": "calculator",
+   "input": "What is 18% of 240?",
+   "expect_any": [
+    "43.2"
+   ],
+   "tools": [
+    "calculator"
+   ]
+  },
+  {
+   "id": "c02",
+   "category": "calculator",
+   "input": "Compute (1250 - 375) * 4.",
+   "expect_any": [
+    "3500"
+   ],
+   "tools": [
+    "calculator"
+   ]
+  },
+  {
+   "id": "c03",
+   "category": "calculator",
+   "input": "What is 7.5 * 12.4?",
+   "expect_any": [
+    "93"
+   ],
+   "tools": [
+    "calculator"
+   ]
+  },
+  {
+   "id": "c04",
+   "category": "calculator",
+   "input": "What is 99999 / 3?",
+   "expect_any": [
+    "33333"
+   ],
+   "tools": [
+    "calculator"
+   ]
+  },
+  {
+   "id": "w01",
+   "category": "weather",
+   "input": "What's the current temperature in Chicago?",
+   "expect_any": [
+    [
+     "\u00b0",
+     "degree",
+     "celsius"
+    ]
+   ],
+   "tools": [
+    "get_weather"
+   ]
+  },
+  {
+   "id": "w02",
+   "category": "weather",
+   "input": "Is it windy in Tokyo right now? Give the wind speed.",
+   "expect_any": [
+    "km/h"
+   ],
+   "tools": [
+    "get_weather"
+   ]
+  },
+  {
+   "id": "w03",
+   "category": "weather",
+   "input": "Current weather in Paris, please.",
+   "expect_any": [
+    [
+     "\u00b0",
+     "degree",
+     "celsius"
+    ]
+   ],
+   "tools": [
+    "get_weather"
+   ]
+  },
+  {
+   "id": "w04",
+   "category": "weather",
+   "input": "How warm is it in Sydney at the moment?",
+   "expect_any": [
+    [
+     "\u00b0",
+     "degree",
+     "celsius"
+    ]
+   ],
+   "tools": [
+    "get_weather"
+   ]
+  },
+  {
+   "id": "p01",
+   "category": "wikipedia",
+   "input": "Use Wikipedia: who was Ada Lovelace?",
+   "expect_any": [
+    "mathematician"
+   ],
+   "tools": [
+    "wikipedia"
+   ]
+  },
+  {
+   "id": "p02",
+   "category": "wikipedia",
+   "input": "Look up the Eiffel Tower on Wikipedia. In which city is it?",
+   "expect_any": [
+    "Paris"
+   ],
+   "tools": [
+    "wikipedia"
+   ]
+  },
+  {
+   "id": "p03",
+   "category": "wikipedia",
+   "input": "Search Wikipedia for Alan Turing and tell me his field.",
+   "expect_any": [
+    [
+     "computer scien",
+     "mathematic",
+     "logic"
+    ]
+   ],
+   "tools": [
+    "wikipedia"
+   ]
+  },
+  {
+   "id": "p04",
+   "category": "wikipedia",
+   "input": "According to Wikipedia, what is the Python programming language named after?",
+   "expect_any": [
+    [
+     "Monty"
+    ]
+   ],
+   "tools": [
+    "wikipedia"
+   ]
+  },
+  {
+   "id": "x01",
+   "category": "multi-tool",
+   "input": "What's the weather in Austin, and what is 12*12?",
+   "expect_any": [
+    "144"
+   ],
+   "tools": [
+    "get_weather",
+    "calculator"
+   ]
+  },
+  {
+   "id": "x02",
+   "category": "multi-tool",
+   "input": "Get the temperature in London and compute 365*24.",
+   "expect_any": [
+    "8760"
+   ],
+   "tools": [
+    "get_weather",
+    "calculator"
+   ]
+  },
+  {
+   "id": "n01",
+   "category": "no-tool",
+   "input": "Say hello in French.",
+   "expect_any": [
+    "bonjour"
+   ],
+   "tools": []
+  },
+  {
+   "id": "n02",
+   "category": "no-tool",
+   "input": "What is the opposite of 'hot'?",
+   "expect_any": [
+    "cold"
+   ],
+   "tools": []
+  }
+ ]
+}

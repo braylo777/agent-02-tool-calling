@@ -1,15 +1,38 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Tool-Calling Agent</title>
-<style>body{font-family:system-ui;max-width:760px;margin:32px auto;padding:0 16px;background:#0b1730;color:#eef}a{color:#9cf}textarea,input,select,button{font-size:15px;padding:8px;border-radius:6px;border:1px solid #345;background:#13234a;color:#eef}textarea{width:100%;box-sizing:border-box}button{cursor:pointer;background:#2b5bd7}pre{background:#13234a;padding:12px;white-space:pre-wrap;border-radius:6px;max-height:480px;overflow:auto}.row{display:flex;gap:8px;margin:8px 0}</style></head>
-<body><h1>Tool-Calling Agent</h1><p>An LLM agent using native function calling to pick and run real tools: calculator, live weather (Open-Meteo) and Wikipedia.</p>
-<div class=row><select id=ep><option value="0">POST /api/ask — weather + math</option><option value="1">POST /api/ask — wikipedia</option></select><button id=go>Send</button></div>
-<textarea id=bd rows=5></textarea><p style="opacity:.7;font-size:13px">Edit the JSON body and press Send. Rate limited to keep this demo on the free tier. Source on <a href="https://github.com/braylo777/agent-02-tool-calling">GitHub</a>.</p>
-<h3>Response</h3><pre id=out></pre>
-<script>
-const S=localStorage.sid||(localStorage.sid=Math.random().toString(36).slice(2,10));
-const E=[{"label": "weather + math", "method": "POST", "path": "/api/ask", "body": {"question": "What's the weather in Chicago right now, and what is 18% of 240?"}}, {"label": "wikipedia", "method": "POST", "path": "/api/ask", "body": {"question": "Summarize who Ada Lovelace was in two sentences."}}];
-const fill=()=>{const x=E[ep.value];bd.value=x.body?JSON.stringify(x.body,null,2).replaceAll("{{session}}",S):"";bd.disabled=x.method==="GET"};
-ep.onchange=fill;fill();
-go.onclick=async()=>{const x=E[ep.value];out.textContent="working…";const t0=Date.now();
-try{const r=await fetch(x.path.replaceAll("{{session}}",S),x.method==="GET"?{}:{method:"POST",headers:{"content-type":"application/json"},body:bd.value});
-out.textContent=`HTTP ${r.status} · ${Date.now()-t0} ms\n\n`+JSON.stringify(await r.json(),null,2)}catch(e){out.textContent=String(e)}};
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tool-Calling Agent · Braylo AI portfolio</title>
+<style>
+:root{--navy:#0d1520;--panel:#141f2e;--cream:#efe9dc;--brass:#b39b70;--mute:#a9a291}
+*{box-sizing:border-box}body{margin:0;background:var(--navy);color:var(--cream);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:760px;margin:0 auto;padding:48px 20px}
+.k{color:var(--brass);letter-spacing:.14em;text-transform:uppercase;font-size:12px;font-weight:600}
+h1{font-family:Georgia,serif;font-weight:500;font-size:40px;margin:8px 0 10px}p.s{color:var(--mute);margin:0 0 28px}
+.card{background:var(--panel);border:1px solid #233246;border-radius:14px;padding:20px;margin:16px 0}
+textarea{width:100%;min-height:84px;resize:vertical;background:var(--navy);color:var(--cream);border:1px solid #2b3c52;border-radius:10px;padding:12px;font:inherit}
+textarea:focus{outline:2px solid var(--brass);border-color:transparent}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+button{font:inherit;cursor:pointer;border-radius:999px;border:1px solid var(--brass)}
+#go{background:var(--brass);color:var(--navy);font-weight:600;padding:10px 22px}#go:disabled{opacity:.6;cursor:wait}
+.chip{background:transparent;color:var(--cream);padding:6px 12px;font-size:13px;border-color:#3a4a60}.chip:hover{border-color:var(--brass)}
+h2{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--brass);margin:0 0 10px}
+#a{white-space:pre-wrap;margin:0}#m{color:var(--mute);font-size:13px;margin-top:10px}
+ol{margin:0;padding-left:20px}li{margin:6px 0;color:var(--mute);font-size:14px}li b{color:var(--cream)}code{color:var(--brass)}
+footer{color:var(--mute);font-size:13px;margin-top:28px}a{color:var(--brass)}
+</style></head><body><main>
+<div class="k">Braylo · Agentic AI portfolio</div><h1>Tool-Calling Agent</h1><p class="s">Native function calling: the model picks from a calculator, live weather (Open-Meteo) and Wikipedia, runs them, then answers from the results.</p>
+<div class="card"><textarea id="q" aria-label="question">What's the weather in Chicago right now?</textarea>
+<div class="row"><button id="go">Run agent</button><button class="chip">What's the weather in Chicago right now?</button><button class="chip">What is 18% of 240?</button><button class="chip">Who was Ada Lovelace? Two sentences.</button><button class="chip">Weather in Tokyo, and what is 12*12?</button></div></div>
+<div class="card"><h2>Answer</h2><p id="a">Press “Run agent” to see a live answer.</p><div id="m"></div></div>
+<div class="card"><h2>Trace</h2><ol id="t"><li>Steps appear here.</li></ol></div>
+<footer>Runs on Cloudflare Workers AI (free tier), limited to 5 requests/min per visitor. Source: <a href="https://github.com/braylo777/agent-02-tool-calling">github.com/braylo777/agent-02-tool-calling</a></footer>
+</main><script>
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"})[c]);
+document.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{$("q").value=b.textContent;run()});
+$("go").onclick=run;
+function step(s){if(s.tool)return `<b>tool · ${esc(s.tool)}</b> ${esc(JSON.stringify(s.input??s.args??""))} → <code>${esc(String(s.observation??s.result??"").slice(0,300))}</code>`;
+if(s.from)return `<b>${esc(s.from)} → ${esc(s.to)}</b> <span>(${s.ms} ms)</span> ${esc((typeof s.content==="string"?s.content:JSON.stringify(s.content)).slice(0,220))}`;
+return `<b>answer</b> ${esc(s.answer??JSON.stringify(s))}`}
+async function run(){const go=$("go");go.disabled=true;$("a").textContent="Thinking…";$("m").textContent="";$("t").innerHTML="";const t0=Date.now();
+try{const r=await fetch("/api/ask",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({question:$("q").value})});const j=await r.json();
+$("a").textContent=j.answer||j.error||"(no answer)";$("m").textContent=`HTTP ${r.status} · ${Date.now()-t0} ms`;
+const tr=j.trace||[];$("t").innerHTML=tr.length?tr.map(s=>`<li>${step(s)}</li>`).join(""):"<li>No tool calls: answered directly.</li>"}
+catch(e){$("a").textContent=String(e)}go.disabled=false}
 </script></body></html>

@@ -1,0 +1,294 @@
+{
+  "project": "agent-02-tool-calling",
+  "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+  "target": "https://agent-02-tool-calling.braylo777.workers.dev",
+  "run_at": "2026-10-28T00:23:25.659Z",
+  "latency_note": "end-to-end HTTP from the eval machine to the live Worker",
+  "metrics": {
+    "n": 16,
+    "http_200": 16,
+    "pass_rate": 0.75,
+    "answer_accuracy": 0.8125,
+    "tool_selection_accuracy": 0.9375,
+    "tool_cases": 16,
+    "latency_ms_p50": 2155,
+    "latency_ms_p95": 5570
+  },
+  "cases": [
+    {
+      "id": "c01",
+      "category": "calculator",
+      "input": "What is 18% of 240?",
+      "status": 200,
+      "ms": 1724,
+      "tools_used": [
+        "calculator"
+      ],
+      "expected_tools": [
+        "calculator"
+      ],
+      "answer_ok": true,
+      "tool_ok": true,
+      "pass": true,
+      "answer": "18% of 240 is 43.2."
+    },
+    {
+      "id": "c02",
+      "category": "calculator",
+      "input": "Compute (1250 - 375) * 4.",
+      "status": 200,
+      "ms": 1898,
+      "tools_used": [
+        "calculator"
+      ],
+      "expected_tools": [
+        "calculator"
+      ],
+      "answer_ok": true,
+      "tool_ok": true,
+      "pass": true,
+      "answer": "The result of the computation (1250 - 375) * 4 is 3500."
+    },
+    {
+      "id": "c03",
+      "category": "calculator",
+      "input": "What is 7.5 * 12.4?",
+      "status": 200,
+      "ms": 1773,
+      "tools_used": [
+        "calculator"
+      ],
+      "expected_tools": [
+        "calculator"
+      ],
+      "answer_ok": true,
+      "tool_ok": true,
+      "pass": true,
+      "answer": "The result of 7.5 * 12.4 is 93."
+    },
+    {
+      "id": "c04",
+      "category": "calculator",
+      "input": "What is 99999 / 3?",
+      "status": 200,
+      "ms": 1921,
+      "tools_used": [
+        "calculator"
+      ],
+      "expected_tools": [
+        "calculator"
+      ],
+      "answer_ok": true,
+      "tool_ok": true,
+      "pass": true,
+      "answer": "The result of 99999 / 3 is 33333."
+    },
+    {
+      "id": "w01",
+      "category": "weather",
+      "input": "What's the current temperature in Chicago?",
+      "status": 200,
+      "ms": 2800,
+      "tools_used": [
+        "get_weather"
+      ],
+      "expected_tools": [
+        "get_weather"
+      ],
+      "answer_ok": true,
+      "tool_ok": true,
+      "pass": true,
+      "answer": "The current temperature in Chicago is 15.1°C."
+    },
+    {
+      "id": "w02",
+      "category": "weather",
+      "input": "Is it windy in Tokyo right now? Give the wind speed.",
+      "status": 200,
+      "ms": 2644,
+      "tools_used": [
+        "get_weather"
+      ],
+      "expected_tools": [
+        "get_weather"
+      ],
+      "answer_ok": true,
+      "tool_ok": true,
+      "pass": true,
+      "answer": "Yes, it is windy in Tokyo right now. The current wind speed is 10.6 km/h."
+    },
+    {
+      "id": "w03",
+      "category": "weather",
+      "input": "Current weather in Paris, please.",
+      "status": 200,
+      "ms": 2717,
+      "tools_used": [
+        "get_weather"
+      ],
+      "expected_tools": [
+        "get_weather"
+      ],
+      "answer_ok": true,
+      "tool_ok": true,
+      "pass": true,
+      "answer": "The current weather in Paris is 10°C with a wind speed of 6.5 km/h."
+    },
+    {
+      "id": "w04",
+      "category": "weather",
+      "input": "How warm is it in Sydney at the moment?",
+      "status": 200,
+      "ms": 3727,
+      "tools_used": [
+        "get_weather"
+      ],
+      "expected_tools": [
+        "get_weather"
+      ],
+      "answer_ok": true,
+      "tool_ok": true,
+      "pass": true,
+      "answer": "It is currently 20.6°C in Sydney."
+    },
+    {
+      "id": "p01",
+      "category": "wikipedia",
+      "input": "Use Wikipedia: who was Ada Lovelace?",
+      "status": 200,
+      "ms": 5570,
+      "tools_used": [
+        "wikipedia",
+        "wikipedia",
+        "wikipedia",
+        "wikipedia"
+      ],
+      "expected_tools": [
+        "wikipedia"
+      ],
+      "answer_ok": false,
+      "tool_ok": true,
+      "pass": false,
+      "answer": "Step limit reached."
+    },
+    {
+      "id": "p02",
+      "category": "wikipedia",
+      "input": "Look up the Eiffel Tower on Wikipedia. In which city is it?",
+      "status": 200,
+      "ms": 1748,
+      "tools_used": [
+        "wikipedia"
+      ],
+      "expected_tools": [
+        "wikipedia"
+      ],
+      "answer_ok": true,
+      "tool_ok": true,
+      "pass": true,
+      "answer": "The Eiffel Tower is located in Paris, France."
+    },
+    {
+      "id": "p03",
+      "category": "wikipedia",
+      "input": "Search Wikipedia for Alan Turing and tell me his field.",
+      "status": 200,
+      "ms": 1576,
+      "tools_used": [
+        "wikipedia"
+      ],
+      "expected_tools": [
+        "wikipedia"
+      ],
+      "answer_ok": true,
+      "tool_ok": true,
+      "pass": true,
+      "answer": "Alan Turing's field was mathematics and logic, and he is also considered the father of theoretical computer science."
+    },
+    {
+      "id": "p04",
+      "category": "wikipedia",
+      "input": "According to Wikipedia, what is the Python programming language named after?",
+      "status": 200,
+      "ms": 2428,
+      "tools_used": [
+        "wikipedia"
+      ],
+      "expected_tools": [
+        "wikipedia"
+      ],
+      "answer_ok": true,
+      "tool_ok": true,
+      "pass": true,
+      "answer": "The Python programming language is named after the British comedy group Monty Python's Flying Circus."
+    },
+    {
+      "id": "x01",
+      "category": "multi-tool",
+      "input": "What's the weather in Austin, and what is 12*12?",
+      "status": 200,
+      "ms": 3749,
+      "tools_used": [
+        "get_weather",
+        "calculator"
+      ],
+      "expected_tools": [
+        "get_weather",
+        "calculator"
+      ],
+      "answer_ok": true,
+      "tool_ok": true,
+      "pass": true,
+      "answer": "The weather in Austin is 24.9°C with a wind speed of 8.7 km/h, and the result of the calculation 12*12 is 144."
+    },
+    {
+      "id": "x02",
+      "category": "multi-tool",
+      "input": "Get the temperature in London and compute 365*24.",
+      "status": 200,
+      "ms": 4497,
+      "tools_used": [
+        "get_weather",
+        "calculator",
+        "calculator",
+        "calculator"
+      ],
+      "expected_tools": [
+        "get_weather",
+        "calculator"
+      ],
+      "answer_ok": false,
+      "tool_ok": true,
+      "pass": false,
+      "answer": "Step limit reached."
+    },
+    {
+      "id": "n01",
+      "category": "no-tool",
+      "input": "Say hello in French.",
+      "status": 200,
+      "ms": 867,
+      "tools_used": [],
+      "expected_tools": [],
+      "answer_ok": false,
+      "tool_ok": true,
+      "pass": false,
+      "answer": "I am unable to fulfill this request as the functions provided are insufficient."
+    },
+    {
+      "id": "n02",
+      "category": "no-tool",
+      "input": "What is the opposite of 'hot'?",
+      "status": 200,
+      "ms": 2155,
+      "tools_used": [
+        "wikipedia"
+      ],
+      "expected_tools": [],
+      "answer_ok": true,
+      "tool_ok": false,
+      "pass": false,
+      "answer": "The opposite of \"hot\" is \"cold\"."
+    }
+  ]
+}
