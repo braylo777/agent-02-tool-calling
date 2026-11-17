@@ -27,15 +27,14 @@ flowchart LR
 4. Loop guard: if the model only repeats calls it already made, the agent asks once more without tools and returns that answer.
 5. Up to 4 rounds; the response includes every tool, its arguments and its result.
 
-- `src/agent.js`: tool schemas, implementations, call normalizer and loop
-- `src/calc.js`: safe arithmetic parser
-- `src/core.js`: Workers AI, rate-limit and JSON helpers
-- `src/index.js`, `src/page.html`: routes and demo UI
+- `src/agent02/agent.py`, `worker/src/agent.rs`: tool schemas, implementations, call normalizer and loop (Python reference and Rust Worker)
+- `src/agent02/core.py`, `worker/src/core.rs`: safe arithmetic parser and JSON helpers
+- `worker/src/worker_entry.rs`, `worker/src/page.rs`: routes, rate limit and demo UI
 
 Guardrails: 5 requests/min per IP (Workers Rate Limiting), 500-character input cap, errors returned as JSON.
 
 ## Evaluation (live model)
-[`evals/run.mjs`](evals/run.mjs) sends every case in [`evals/cases.json`](evals/cases.json) to the **deployed** demo (Llama 3.3 70B fp8 on Workers AI) and scores it. A case passes when the response is HTTP 200, the answer contains the expected key fact(s) (case-insensitive), and the set of tools used equals the expected set (empty for questions that need no tool). Latency is end-to-end HTTP from the eval machine. The suite is deliberately small to stay inside the free daily Workers AI allowance, so treat the numbers as indicative.
+[`evals/run.py`](evals/run.py) sends every case in [`evals/cases.json`](evals/cases.json) to the **deployed** demo (Llama 3.3 70B fp8 on Workers AI) and scores it. A case passes when the response is HTTP 200, the answer contains the expected key fact(s) (case-insensitive), and the set of tools used equals the expected set (empty for questions that need no tool). Latency is end-to-end HTTP from the eval machine. The suite is deliberately small to stay inside the free daily Workers AI allowance, so treat the numbers as indicative.
 
 **Full run, 16 cases, before the eval-driven fixes** ([`evals/results.json`](evals/results.json), 2026-10-28T00:23:25.659Z):
 
@@ -46,7 +45,7 @@ Guardrails: 5 requests/min per IP (Workers Rate Limiting), 500-character input c
 | Tool-selection accuracy (set of tools used = expected set) | 93.8% (15/16) |
 | Latency p50 / p95 (end-to-end HTTP) | 2155 ms / 5570 ms |
 
-**Re-run after the fixes, partial: 9 cases** ([`evals/results.postfix-partial.json`](evals/results.postfix-partial.json)): 9/9 passed; the same 9 cases passed 8/9 before the fixes. The re-run stopped early when the build machine was restored, and the shared free Workers AI daily allowance ran out before a full re-run, so the post-fix numbers cover only these cases. `node evals/run.mjs` reproduces the full suite.
+**Re-run after the fixes, partial: 9 cases** ([`evals/results.postfix-partial.json`](evals/results.postfix-partial.json)): 9/9 passed; the same 9 cases passed 8/9 before the fixes. The re-run stopped early when the build machine was restored, and the shared free Workers AI daily allowance ran out before a full re-run, so the post-fix numbers cover only these cases. `python3 evals/run.py` reproduces the full suite.
 
 Failures in the full (pre-fix) run:
 - `p01` Use Wikipedia: who was Ada Lovelace? → tools ['wikipedia', 'wikipedia', 'wikipedia', 'wikipedia']: Step limit reached.
@@ -57,16 +56,18 @@ Failures in the full (pre-fix) run:
 **What the evals caught:** The first full run showed the model re-calling the same tool with identical arguments until the step limit (`p01`, `x02`), refusing a greeting because "the functions are insufficient" (`n01`), and calling Wikipedia for a trivial question (`n02`). A repeat-call guard and a clearer system prompt address these, with a regression test. Calculator output is also trimmed of float noise (0.18*240 → 43.2).
 
 ## Tests
-15 offline unit tests (`node --test`), 15 passing. The LLM and HTTP APIs are mocked, so they run without a Cloudflare account.
+Python: 15 tests passing. Rust: 9 tests passing. The calculator gives identical output to the old JavaScript on 411 expressions, and the tool-call normalizer matches on 20 model-output fixtures (Python and Rust). The LLM and HTTP APIs are mocked, so they run without a Cloudflare account.
 
 ## Run it
 ```bash
-npm install
-npm test                    # unit tests, Node 20+
-npx wrangler dev            # local dev; Workers AI uses your Cloudflare login
-npx wrangler deploy         # free tier, no paid API keys
-node evals/run.mjs          # live eval against the demo (paced for the rate limit)
+python3 -m pytest                       # Python tests
+cd worker && cargo test                 # Rust tests
+cd worker && worker-build --release     # build the Worker (wasm)
+wrangler dev                            # local dev; Workers AI uses your Cloudflare login
+python3 evals/run.py                    # live eval against the demo (paced for the rate limit)
 ```
+
+The previous JavaScript version is on the `legacy-js` branch and the `pre-pycrust` tag.
 
 ## License
 MIT

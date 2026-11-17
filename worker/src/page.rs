@@ -1,4 +1,5 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tool-Calling Agent · Braylo AI portfolio</title>
+//! Demo page (generated from the old src/page.html; kept as a Rust string).
+pub const PAGE: &str = r####"<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Tool-Calling Agent · Braylo AI portfolio</title>
 <style>
 :root{--navy:#0d1520;--panel:#141f2e;--cream:#efe9dc;--brass:#b39b70;--mute:#a9a291}
 *{box-sizing:border-box}body{margin:0;background:var(--navy);color:var(--cream);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
@@ -35,4 +36,4 @@ try{const r=await fetch("/api/ask",{method:"POST",headers:{"content-type":"appli
 $("a").textContent=j.answer||j.error||"(no answer)";$("m").textContent=`HTTP ${r.status} · ${Date.now()-t0} ms`;
 const tr=j.trace||[];$("t").innerHTML=tr.length?tr.map(s=>`<li>${step(s)}</li>`).join(""):"<li>No tool calls: answered directly.</li>"}
 catch(e){$("a").textContent=String(e)}go.disabled=false}
-</script></body></html>
+</script></body></html>"####;
